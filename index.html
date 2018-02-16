@@ -17,6 +17,10 @@
             <input id="titleInput" type="text" />
         </p>
         <p>
+            <label for="questionInput">Enter question:</label>
+            <input id="questionInput" type="text"/>
+        </p>
+        <p>
             <label for="answer1">1: </label>
             <input id="answer1" type="text" />
         </p>
@@ -36,9 +40,18 @@
             <label for="answer5">5: </label>
             <input id="answer5" type="text" />
         </p>
-        <button id="addMore">Add more</button>
+            <button id="addMore">Add more</button>
+        <p>
+            <label for="hintInput">Enter hint:</label>
+            <textarea id="hintInput"></textarea>
+        </p>
+        <p>
+            <label for="explanationInput">Enter explanation:</label>
+            <textarea id="explanationInput"></textarea>
+         </p>
     </div>
     <script type="application/javascript">
+        var numAnswers = 5;
         var addMoreButton = document.getElementById("addMore");
         addMoreButton.onclick = function() {
             if (countAnswers() > 8) addMoreButton.style.visibility = "hidden";
@@ -46,31 +59,72 @@
         };
 
         function countAnswers () {
-            return document.getElementById("content").childElementCount - 2;
+            // TODO: fixed number is always bad :-(
+            return 5;
         }
 
         function createAnswer () {
             var newAnswer = document.createElement("p");
             var label = document.createElement("label");
             var input = document.createElement("input");
-            label.setAttribute("for","answer" + countAnswers() + 1);
+            label.setAttribute("for","answer" + (countAnswers() + 1));
             label.innerHTML = countAnswers() + 1 + ": ";
-            input.setAttribute("id","answer" + countAnswers() + 1);
+            input.setAttribute("id","answer" + (countAnswers() + 1));
             input.setAttribute("type","text");
             newAnswer.appendChild(label);
             newAnswer.appendChild(input);
+            numAnswers += 1;
             return newAnswer;
         }
 
         function dataGetter() {
+            var lastEdit = Date.now();
+            var answers = [];
+            for (var i = 1; i <= countAnswers(); i++) {
+                var value = document.getElementById('answer' + i).value;
+                if (value !== undefined && value.length !== undefined && value.length > 0) {
+                    answers.push({
+                        value: value,
+                        order: i,
+                        lastEdit: lastEdit,
+                        id: i
+                    });
+                }
+            }
             return {
                 // return data object
-                title: document.getElementById('titleInput').value
+                title: document.getElementById('titleInput').value,
+                priority: 1,
+                type: 'SS',
+                question: document.getElementById('questionInput').value,
+                answers: answers,
+                questionContext: document.getElementById('hintInput').value,
+                answerContext: document.getElementById('explanationInput').value,
+                lastEdit: lastEdit,
+                id: 0,
+                lessonId: 0,
+                releaseStatus: 'PUBLIC',
+                editable: null,
+                learningStatus: 0,
+                skipStatus: 'NEVER_SKIPPABLE',
+                multimedia: [],
+                // preview metadata
+                description: document.getElementById('questionInput').value.replace(/<\/?[^>]+(>|$)/g, "")
+                + "\n" + answers.map(function (e, i) {
+                    return "(" + (i + 1) + ") " + e.value
+                }).join("\n")
             }
         }
 
         init();
         document.getElementById('titleInput').value = window.data.title;
+        document.getElementById('questionInput').value = window.data.question;
+        for (var i = 1; i <= window.data.answers.length; i++) {
+            document.getElementById('answer' + i).value = window.data.answers[i - 1].value;
+            document.getElementById('answer' + i + 'correct').checked = window.data.answers[i - 1].correct;
+        }
+        document.getElementById('hintInput').value = window.data.questionContext;
+        document.getElementById('explanationInput').value = window.data.answerContext;
     </script>
 </body>
 </html>
