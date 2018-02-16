@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AbstactContentEditor</title>
+    <script type="application/javascript">
+        function init() {
+            window.data = getData();
+            setDataGetter(dataGetter)
+        }
+    </script>
+</head>
+<body>
+    <div>
+        <label for="titleInput">Enter Title:</label>
+        <input id="titleInput" type="text" />
+    </div>
+    <script type="application/javascript">
+        function dataGetter() {
+            return {
+                // return data object
+                title: document.getElementById('titleInput').value
+            }
+        }
+
+        init();
+        document.getElementById('titleInput').value = window.data.title;
+    </script>
+</body>
+</html>
