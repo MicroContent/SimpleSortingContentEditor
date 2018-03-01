@@ -20,26 +20,6 @@
             <label for="questionInput">Enter question:</label>
             <input id="questionInput" type="text"/>
         </p>
-        <p>
-            <label for="answer1">1: </label>
-            <input id="answer1" type="text" />
-        </p>
-        <p>
-            <label for="answer2">2: </label>
-            <input id="answer2" type="text" />
-        </p>
-        <p>
-            <label for="answer3">3: </label>
-            <input id="answer3" type="text" />
-        </p>
-        <p>
-            <label for="answer4">4: </label>
-            <input id="answer4" type="text" />
-        </p>
-        <p>
-            <label for="answer5">5: </label>
-            <input id="answer5" type="text" />
-        </p>
             <button id="addMore">Add more</button>
         <p>
             <label for="hintInput">Enter hint:</label>
@@ -51,8 +31,9 @@
          </p>
     </div>
     <script type="application/javascript">
-        var numAnswers = 5;
+        var numAnswers = 0;
         var addMoreButton = document.getElementById("addMore");
+    
         addMoreButton.onclick = function() {
             if (countAnswers() > 8) addMoreButton.style.visibility = "hidden";
             addMoreButton.parentNode.insertBefore(createAnswer(), addMoreButton);
@@ -116,6 +97,13 @@
         }
 
         init();
+        
+        if (window.data.answers.length == 0) {
+                for (var i = 0; i < 5; i++) addMoreButton.parentNode.insertBefore(createAnswer(), addMoreButton);
+            } else {
+                for (var i = 0; i < window.data.answers.length; i++) addMoreButton.parentNode.insertBefore(createAnswer(), addMoreButton);
+            }
+
         document.getElementById('titleInput').value = window.data.title;
         document.getElementById('questionInput').value = window.data.question;
         for (var i = 1; i <= window.data.answers.length; i++) {
